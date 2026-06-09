@@ -55,8 +55,8 @@ mongosh --port 27018 --eval 'rs.initiate({ _id: "rs0", members: [{ _id: 0, host:
 
 이미 `rs0`가 초기화된 `data/db`를 다시 사용하는 경우에는 `rs.initiate`를 다시 실행하지 않아도 됩니다.
 
-DB01/WAS01 분리 배포에서는 `.env.db01.example`을 `.env`로 복사해서 `<DB01_IP>`, `<WAS01_IP>`, 비밀번호, secret을 실제 값으로 바꿉니다.
-DB01의 MongoDB는 `rs0` replica set으로 초기화되어 있어야 하며, 자세한 DB01 설정 절차는 `docs/DB01_MONGODB_SETUP.md`를 참고합니다.
+DB01/WAS01 분리 배포에서는 `.env.was01.example`을 WAS01의 `.env`로 복사해서 `<DB01_IP>`, `<WAS01_IP>`, 비밀번호, secret을 실제 값으로 바꿉니다.
+DB01의 MongoDB는 `rs0` replica set으로 초기화되어 있어야 하며, 전체 분리 배포 절차는 `docs/WAS01_DB01_DEPLOYMENT.md`를 참고합니다.
 
 `JWT_SECRET`은 운영 환경에서 충분히 긴 임의 문자열로 바꿔야 합니다.
 
@@ -71,10 +71,10 @@ openssl rand -base64 48
 DB01에서 MongoDB가 `127.0.0.1`에만 묶여 있으면 WAS01이 접속할 수 없습니다. DB01 서버에서 아래 스크립트를 `sudo`로 실행해 MongoDB를 `27017` 포트와 DB01 내부 IP에 바인딩하고, `rs0` replica set 설정을 적용합니다.
 
 ```bash
-sudo DB01_IP=192.168.100.135 ./scripts/configure-db01-mongodb.sh
+sudo DB01_IP=<DB01_IP> APP_DB_PASSWORD='<strong_mongodb_password>' ./scripts/configure-db01-mongodb.sh
 ```
 
-성공하면 `ss -lntp` 결과에 `192.168.100.135:27017`이 보이고, `systemctl status mongod`가 `active (running)` 상태여야 합니다.
+성공하면 `ss -lntp` 결과에 `<DB01_IP>:27017`이 보이고, `systemctl status mongod`가 `active (running)` 상태여야 합니다.
 
 ## MongoDB 앱 계정
 
